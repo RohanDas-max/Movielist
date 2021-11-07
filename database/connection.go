@@ -27,7 +27,9 @@ func Connection() {
 	}
 
 	var movies *model.Movielist
+	var ratings *model.Ratings
 	db.AutoMigrate(&movies)
+	db.AutoMigrate(&ratings)
 
 	DB = db
 

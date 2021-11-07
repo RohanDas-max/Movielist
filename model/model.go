@@ -1,15 +1,22 @@
 package model
 
-import "time"
-
 type Movielist struct {
-	ID        int       `json:"id" gorm:"primary_key, not null = true"`
-	Name      string    `json:"name" gorm:"not null"`
-	CreatedAt time.Time `json:"createdat" gorm:"not null"`
-	Rating    int8      `json:"rating" gorm:"not null"`
+	ID     int       `json:"id"`
+	Name   string    `json:"name" gorm:"not null"`
+	Rating []Ratings `gorm:"foreignKey:Rating_id;references:ID"`
+}
+
+type Ratings struct {
+	Rating_id int    `json:"rating_id" gorm:"primary_key"`
+	Rate      int    `json:"rate"`
+	Review    string `json:"review"`
 }
 
 type Movies struct {
-	Name   string `json:"name"`
-	Rating int8   `json:"rating"`
+	Name string `json:"name"`
+}
+
+type Rating struct {
+	Rating int    `json:"rating"`
+	Review string `json:"review"`
 }
