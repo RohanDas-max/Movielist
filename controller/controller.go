@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"movielist/database"
 	"movielist/model"
 
@@ -17,17 +16,18 @@ func Hello(c *gin.Context) {
 }
 
 func GetAllMovies(c *gin.Context) {
-	database.DB.Raw("SELECT name, rating FROM movielists WHERE id != ? ", 0).Scan(&movielist)
+	database.DB.Raw("SELECT name, rating FROM movielists WHERE id != ? ", nil).Scan(&movielist)
 	json.NewEncoder(c.Writer).Encode(&movielist)
 }
 
 func PostMovie(c *gin.Context) {
+
 	err := c.Bind(&movies)
 
 	if err != nil {
-		json.NewEncoder(c.Writer).Encode("something went wrong")
-		fmt.Println(err)
+		json.NewEncoder(c.Writer).Encode(err)
 	} else {
-		database.DB.Create(&movies)
+		database.DB.Create(&movies).Where("Name = ? and Rating != null", nil)
+
 	}
 }

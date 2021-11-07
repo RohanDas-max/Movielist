@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"log"
+	"movielist/model"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
@@ -24,6 +25,9 @@ func Connection() {
 	if err != nil {
 		log.Fatal("db con error", err)
 	}
+
+	var movies *model.Movielist
+	db.AutoMigrate(&movies)
 
 	DB = db
 

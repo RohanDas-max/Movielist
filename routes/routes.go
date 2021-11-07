@@ -7,7 +7,7 @@ import (
 )
 
 func Routes() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
 
 	r.GET("/api/hello", controller.Hello)
 	r.GET("/api/movies", controller.GetAllMovies)
