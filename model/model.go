@@ -1,7 +1,7 @@
 package model
 
 type Movielist struct {
-	ID     int       `json:"id"`
+	ID     uint      `json:"id" gorm:"null" binding:"-"`
 	Name   string    `json:"name" gorm:"not null"`
 	Rating []Ratings `gorm:"foreignKey:Rating_id;references:ID"`
 }
@@ -12,11 +12,9 @@ type Ratings struct {
 	Review    string `json:"review"`
 }
 
-type Movies struct {
-	Name string `json:"name"`
-}
-
-type Rating struct {
-	Rating int    `json:"rating"`
+type Getallmovies struct {
+	ID     int    `json:"id"`
+	Name   string `json:"Moviename"`
+	Rate   int    `json:"rating"`
 	Review string `json:"review"`
 }

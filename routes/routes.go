@@ -7,11 +7,11 @@ import (
 )
 
 func Routes() *gin.Engine {
-	r := gin.New()
+	r := gin.Default()
 
-	r.GET("/api/hello", controller.Hello)
 	r.GET("/api/movies", controller.GetAllMovies)
 	r.POST("/api/movie", controller.PostMovie)
 	r.POST("/api/review", controller.PostReview)
+	r.POST("/api/movie", controller.GetAmovie)
 	return r
 }
