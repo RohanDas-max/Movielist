@@ -24,7 +24,7 @@ func GetAllMovies(c *gin.Context) {
 }
 
 func GetAmovie(c *gin.Context) {
-
+	//!TODO
 }
 
 func PostMovie(c *gin.Context) {
