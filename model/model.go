@@ -1,5 +1,9 @@
 package model
 
+type Schema interface {
+	Movielist()
+}
+
 type Movielist struct {
 	ID     uint      `json:"id" gorm:"null" binding:"-"`
 	Name   string    `json:"name" gorm:"not null"`

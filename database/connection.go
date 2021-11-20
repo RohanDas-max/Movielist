@@ -6,7 +6,7 @@ import (
 	"movielist/model"
 
 	"github.com/joho/godotenv"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -18,9 +18,8 @@ func Connection() {
 	if envErr != nil {
 		log.Fatal("error occured on env var", envErr)
 	}
-	dsn := fmt.Sprintf("%s:%s@tcp%s/%s?charset=utf8mb4&parseTime=True&loc=Local", envMap["USER"], envMap["PASS"], envMap["HOST"], envMap["DATABASE"])
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Kolkata", envMap["POSTGRESQL_ADDON_HOST"], envMap["POSTGRESQL_ADDON_USER"], envMap["POSTGRESQL_ADDON_PASSWORD"], envMap["POSTGRESQL_ADDON_DB"], envMap["POSTGRESQL_ADDON_PORT"])
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("db con error", err)

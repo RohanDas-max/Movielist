@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var schema model.Schema
 var movies *model.Movielist
 var ratings *model.Ratings
 var Getallmovies *[]model.Getallmovies
@@ -42,6 +43,7 @@ func PostMovie(c *gin.Context) {
 				"success": "Movie stored",
 				"movie":   movies,
 			})
+			// defer c.Request.Body.Close()
 		}
 	}
 }
