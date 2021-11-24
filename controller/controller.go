@@ -9,13 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var schema model.Schema
-var movies *model.Movielist
-var ratings *model.Ratings
-var Getallmovies *[]model.Getallmovies
-
 func GetAllMovies(c *gin.Context) {
-	if err := database.DB.Raw("SELECT movielists.id,movielists.name,ratings.rate,ratings.review FROM movielists inner join ratings on ratings.rating_id=movielists.id;").Scan(&Getallmovies).Error; err != nil {
+	var Getallmovies *[]model.Getallmovies
+	if err := database.DB.Raw("SELECT * FROM ratings FULL OUTER JOIN Movielists on ratings.movielist_id = movielists.id;").Scan(&Getallmovies).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": "something went wrong",
 		})
@@ -25,18 +21,30 @@ func GetAllMovies(c *gin.Context) {
 }
 
 func GetAmovie(c *gin.Context) {
-	//!TODO
+	var Getallmovies *model.Getallmovies
+	userid := c.Param("id")
+	if err := database.DB.Raw("SELECT * FROM ratings FULL OUTER JOIN Movielists on ratings.movielist_id = ?;", userid).Scan(&Getallmovies).Error; err != nil {
+		c.JSON(http.StatusConflict, gin.H{
+			"message": "something went wrong",
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"DATA": Getallmovies})
+	}
+
 }
 
 func PostMovie(c *gin.Context) {
-	err := c.ShouldBind(&movies)
+	var movies *model.Movielist
+
+	err := c.Bind(&movies)
 	if err != nil {
 		panic(err)
 		// json.NewEncoder(c.Writer).Encode(err)
 	} else {
 		if err := database.DB.Create(&movies).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"alert": "please provide a id",
+				"alert": "OH NO!",
+				"err":   err,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
@@ -49,7 +57,10 @@ func PostMovie(c *gin.Context) {
 }
 
 func PostReview(c *gin.Context) {
+	var ratings *model.Ratings
+
 	err := c.Bind(&ratings)
+
 	if err != nil {
 		json.NewEncoder(c.Writer).Encode(err)
 	} else {
