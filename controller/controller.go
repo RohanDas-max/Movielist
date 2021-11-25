@@ -5,32 +5,37 @@ import (
 	"movielist/database"
 	"movielist/model"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllMovies(c *gin.Context) {
-	var Getallmovies *[]model.Getallmovies
-	if err := database.DB.Raw("SELECT * FROM ratings FULL OUTER JOIN Movielists on ratings.movielist_id = movielists.id;").Scan(&Getallmovies).Error; err != nil {
+	var Getallmovies *[]model.Getmovies
+
+	// SELECT * FROM ratings FULL OUTER JOIN Movielists on ratings.movielist_id = movielists.id;
+	if err := database.DB.Raw("SELECT movielists.id,name,rate,review FROM movielists RIGHT JOIN ratings ON movielists.id = ratings.movielist_id;").Scan(&Getallmovies).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": "something went wrong",
 		})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"DATA": Getallmovies})
+		c.JSON(http.StatusOK, gin.H{
+			"DATA": Getallmovies,
+		})
 	}
 }
 
 func GetAmovie(c *gin.Context) {
-	var Getallmovies *model.Getallmovies
+	var GetMovie *[]model.Getmovies
 	userid := c.Param("id")
-	if err := database.DB.Raw("SELECT * FROM ratings FULL OUTER JOIN Movielists on ratings.movielist_id = ?;", userid).Scan(&Getallmovies).Error; err != nil {
+	id, _ := strconv.Atoi(userid)
+	if err := database.DB.Raw("SELECT movielists.id,name,rate,review FROM movielists RIGHT JOIN ratings ON movielists.id = ratings.movielist_id Where movielists.id = ?;", id).Scan(&GetMovie).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{
 			"message": "something went wrong",
 		})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"DATA": Getallmovies})
+		c.JSON(http.StatusOK, gin.H{"DATA": GetMovie})
 	}
-
 }
 
 func PostMovie(c *gin.Context) {
@@ -51,7 +56,7 @@ func PostMovie(c *gin.Context) {
 				"success": "Movie stored",
 				"movie":   movies,
 			})
-			// defer c.Request.Body.Close()
+
 		}
 	}
 }
@@ -73,6 +78,39 @@ func PostReview(c *gin.Context) {
 				"success": "rating a review recorder",
 			})
 		}
-
 	}
+}
+
+func DeleteAmovie(c *gin.Context) {
+	var movielist *model.Movielist
+	var ratings *model.Ratings
+	id := c.Param("id")
+	Id, _ := strconv.Atoi(id)
+	if err := database.DB.Where("movielist_id = ?", Id).Delete(&ratings).Error; err == nil {
+		database.DB.Where("movielist_id = ?", Id).Delete(&movielist)
+		c.JSON(http.StatusAccepted, gin.H{
+			"msg": "removed successfully",
+		})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+	}
+}
+
+func Delete(c *gin.Context) {
+
+	if err := database.DB.Raw("TRUNCATE TABLE Ratings").Error; err == nil {
+
+		database.DB.Raw("TRUNCATE TABLE Movielists")
+		c.JSON(http.StatusAccepted, gin.H{
+			"msg": "database deleted successfully",
+		})
+
+	} else {
+		c.JSON(http.StatusForbidden, gin.H{
+			"msg": err,
+		})
+	}
+
 }

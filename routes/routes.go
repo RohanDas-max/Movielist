@@ -13,5 +13,7 @@ func Routes() *gin.Engine {
 	r.POST("/api/movie", controller.PostMovie)
 	r.POST("/api/review", controller.PostReview)
 	r.GET("/api/:id/movie", controller.GetAmovie)
+	r.DELETE("/api/:id/delete", controller.DeleteAmovie)
+	r.DELETE("/api/purge", controller.Delete)
 	return r
 }

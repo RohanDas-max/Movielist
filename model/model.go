@@ -1,27 +1,21 @@
 package model
 
-import "gorm.io/gorm"
-
-type Schema interface {
-	Movielist()
-}
-
 type Movielist struct {
-	gorm.Model
+	ID     int
 	Name   string `json:"name" gorm:"not null"`
 	Rating []Ratings
 }
 
 type Ratings struct {
-	gorm.Model
+	ID          int
 	Rate        int    `json:"rate"`
 	Review      string `json:"review"`
 	MovielistID uint
 }
 
-type Getallmovies struct {
+type Getmovies struct {
 	ID     int    `json:"id"`
 	Name   string `json:"Moviename"`
-	Rate   int
-	Review string
+	Rate   int    `json:"rating"`
+	Review string `json:"review"`
 }
