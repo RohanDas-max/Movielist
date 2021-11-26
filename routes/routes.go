@@ -7,6 +7,8 @@ import (
 )
 
 func Routes() *gin.Engine {
+
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	r.GET("/api/movies", controller.GetAllMovies)
